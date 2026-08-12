@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Wi-Fi Setup";
+}
+
+<div class="onboarding-page">
+
+    <div class="onboarding-card">
+
+        <!-- Progress -->
+        <div class="onboarding-progress">
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step active">
+                <span>3</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>4</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>5</span>
+            </div>
+
+        </div>
+
+        <div class="onboarding-icon">
+            <i class="bi bi-wifi"></i>
+        </div>
+
+        <div class="onboarding-step-label">
+            STEP 3 OF 5
+        </div>
+
+        <h1>Connect to Wi-Fi</h1>
+
+        <p class="onboarding-description">
+            Your meter will use Wi-Fi for normal communication
+            after setup is complete.
+        </p>
+
+        <!-- Network -->
+        <div class="form-group">
+
+            <label>
+                Wi-Fi network
+            </label>
+
+            <div class="select-input">
+
+                <i class="bi bi-wifi"></i>
+
+                <select>
+                    <option>STEMM-Lab</option>
+                    <option>Home Network</option>
+                    <option>Office Wi-Fi</option>
+                </select>
+
+                <i class="bi bi-chevron-down"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+
+            <label>
+                Password
+            </label>
+
+            <div class="password-input">
+
+                <i class="bi bi-lock"></i>
+
+                <input type="password"
+                       value="password123"
+                       placeholder="Enter Wi-Fi password" />
+
+                <button type="button">
+                    <i class="bi bi-eye"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Info -->
+        <div class="wifi-info">
+
+            <i class="bi bi-info-circle"></i>
+
+            <span>
+                Bluetooth is only required during setup.
+                Once connected, your meter will communicate
+                through Wi-Fi.
+            </span>
+
+        </div>
+
+        <a asp-controller="Devices"
+           asp-action="Configure"
+           class="btn btn-primary onboarding-button">
+
+            Connect meter
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+</div>

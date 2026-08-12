@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Device Connected";
+}
+
+<div class="onboarding-page">
+
+    <div class="onboarding-card completion-card">
+
+        <!-- Progress -->
+        <div class="onboarding-progress">
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+        </div>
+
+        <div class="success-icon">
+            <i class="bi bi-check-lg"></i>
+        </div>
+
+        <div class="onboarding-step-label">
+            SETUP COMPLETE
+        </div>
+
+        <h1>Device connected</h1>
+
+        <p class="onboarding-description">
+            Your STEMM meter is now connected and ready to use.
+        </p>
+
+        <!-- Device -->
+        <div class="completion-device">
+
+            <div class="device-option-icon">
+                <i class="bi bi-cpu"></i>
+            </div>
+
+            <div class="completion-device-info">
+
+                <strong>STEMM Meter Pro</strong>
+
+                <span class="mono">
+                    BT-4A2F · MP-300
+                </span>
+
+            </div>
+
+            <span class="badge badge-online">
+                Online
+            </span>
+
+        </div>
+
+        <!-- Connection -->
+        <div class="connection-summary">
+
+            <div>
+                <span>Connection</span>
+                <strong>
+                    <i class="bi bi-wifi"></i>
+                    Wi-Fi
+                </strong>
+            </div>
+
+            <div>
+                <span>Signal</span>
+                <strong>Excellent</strong>
+            </div>
+
+            <div>
+                <span>Bluetooth</span>
+                <strong class="muted">
+                    Setup only
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="success-message">
+
+            <i class="bi bi-info-circle"></i>
+
+            <span>
+                Bluetooth is no longer required.
+                Your meter will communicate through Wi-Fi
+                during normal operation.
+            </span>
+
+        </div>
+
+        <a asp-controller="Devices"
+           asp-action="Detail"
+           asp-route-id="MTR-001"
+           class="btn btn-primary onboarding-button">
+
+            View device
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+        <a asp-controller="Devices"
+           asp-action="Index"
+           class="onboarding-secondary">
+
+            Back to devices
+
+        </a>
+
+    </div>
+
+</div>

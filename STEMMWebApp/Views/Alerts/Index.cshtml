@@ -1,56 +1,354 @@
 ﻿@using STEMMWebApp.Models
 
 @model List<AlertItem>
+
 @{
     ViewData["Title"] = "Alerts";
-    string BadgeClass(string t) => t switch { "Critical" => "badge-critical", "Warning" => "badge-warning", _ => "badge-info" };
-    string IconFor(string t) => t switch { "Critical" => "exclamation-triangle", "Warning" => "exclamation-circle", _ => "activity" };
+
+    string AlertColor(string type) => type switch
+    {
+        "Critical" => "var(--red)",
+        "Warning" => "var(--amber)",
+        _ => "var(--cyan)"
+    };
+
+    string AlertIcon(string type) => type switch
+    {
+        "Critical" => "exclamation-triangle-fill",
+        "Warning" => "exclamation-circle-fill",
+        _ => "info-circle-fill"
+    };
 }
 
-<div class="grid grid-3" style="margin-bottom:24px;">
-    <div class="card stat-card">
-        <span class="stat-label">Open Alerts</span>
-        <span class="stat-value">@Model.Count(a => !a.Resolved)</span>
-        <span class="stat-sub">Needs attention</span>
+
+<!-- =========================================================
+     PAGE HEADER
+     ========================================================= -->
+
+<div class="alerts-header">
+
+    <div>
+
+        <div class="section-eyebrow">
+            MONITORING
+        </div>
+
+        <h1>
+            Alerts
+        </h1>
+
+        <p>
+            Monitor issues and events across your STEMM devices.
+        </p>
+
     </div>
-    <div class="card stat-card">
-        <span class="stat-label">Critical</span>
-        <span class="stat-value">@Model.Count(a => a.Type == "Critical" && !a.Resolved)</span>
-        <span class="stat-sub">Unresolved</span>
-    </div>
-    <div class="card stat-card">
-        <span class="stat-label">Resolved Today</span>
-        <span class="stat-value">@Model.Count(a => a.Resolved)</span>
-        <span class="stat-sub">Closed out</span>
-    </div>
+
 </div>
 
-<div class="card">
-    <div class="section-head"><span class="section-title">All Alerts</span></div>
+
+<!-- =========================================================
+     ALERT SUMMARY
+     ========================================================= -->
+
+<div class="alert-summary-grid">
+
+    <div class="alert-summary-card">
+
+        <div class="alert-summary-icon open">
+            <i class="bi bi-bell-fill"></i>
+        </div>
+
+        <div>
+
+            <span class="alert-summary-label">
+                OPEN ALERTS
+            </span>
+
+            <strong>
+                @Model.Count(a => !a.Resolved)
+            </strong>
+
+            <small>
+                Needs attention
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="alert-summary-card critical">
+
+        <div class="alert-summary-icon critical">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <div>
+
+            <span class="alert-summary-label">
+                CRITICAL
+            </span>
+
+            <strong>
+                @Model.Count(a => a.Type == "Critical" && !a.Resolved)
+            </strong>
+
+            <small>
+                Immediate attention
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="alert-summary-card">
+
+        <div class="alert-summary-icon resolved">
+            <i class="bi bi-check-lg"></i>
+        </div>
+
+        <div>
+
+            <span class="alert-summary-label">
+                RESOLVED
+            </span>
+
+            <strong>
+                @Model.Count(a => a.Resolved)
+            </strong>
+
+            <small>
+                Closed alerts
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FILTERS
+     ========================================================= -->
+
+<div class="alerts-toolbar">
+
+    <div class="alert-filters">
+
+        <button class="alert-filter active"
+                onclick="filterAlerts('all', this)">
+            All
+        </button>
+
+        <button class="alert-filter"
+                onclick="filterAlerts('Critical', this)">
+            Critical
+        </button>
+
+        <button class="alert-filter"
+                onclick="filterAlerts('Warning', this)">
+            Warning
+        </button>
+
+        <button class="alert-filter"
+                onclick="filterAlerts('open', this)">
+            Open
+        </button>
+
+        <button class="alert-filter"
+                onclick="filterAlerts('resolved', this)">
+            Resolved
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ALERT LIST
+     ========================================================= -->
+
+<div class="alerts-list">
+
     @foreach (var a in Model)
     {
-        <div class="list-row" style="padding-left:0; padding-right:0; cursor:pointer;" onclick="location.href='@Url.Action("Detail", "Alerts", new { id = a.Id })'">
-            <span style="color:@(a.Type == "Critical" ? "var(--red)" : a.Type == "Warning" ? "var(--amber)" : "var(--cyan)");">
-                <i class="bi bi-@(IconFor(a.Type))"></i>
-            </span>
-            <div style="flex:1; min-width:0;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-                    <span class="badge @BadgeClass(a.Type)">@a.Type</span>
-                    <span style="font-size:12px; color:var(--muted-foreground);">@a.Dept &middot; @a.Meter</span>
+        <div class="alert-card
+                    @(a.Resolved ? "resolved" : "")
+                    alert-type-@a.Type.ToLower()"
+             data-type="@a.Type"
+             data-resolved="@a.Resolved.ToString().ToLower()"
+             onclick="location.href='@Url.Action("Detail", "Alerts", new { id = a.Id })'">
+
+
+            <!-- Severity -->
+            <div class="alert-severity"
+                 style="color:@AlertColor(a.Type);">
+
+                <div class="alert-severity-icon">
+
+                    <i class="bi bi-@AlertIcon(a.Type)"></i>
+
+                </div>
+
+                <div class="alert-severity-line"></div>
+
+            </div>
+
+
+            <!-- Content -->
+            <div class="alert-content">
+
+                <div class="alert-card-top">
+
+                    <div class="alert-card-title">
+
+                        <span class="alert-type-badge @a.Type.ToLower()">
+                            @a.Type
+                        </span>
+
+                        @if (a.Resolved)
+                        {
+                            <span class="alert-resolved-badge">
+                                <i class="bi bi-check"></i>
+                                Resolved
+                            </span>
+                        }
+
+                    </div>
+
+                    <span class="alert-time mono">
+                        @a.Time
+                    </span>
+
+                </div>
+
+
+                <h2>
+                    @a.Msg
+                </h2>
+
+
+                <div class="alert-card-meta">
+
+                    <span>
+                        <i class="bi bi-cpu"></i>
+                        @a.Meter
+                    </span>
+
+                    <span>
+                        <i class="bi bi-building"></i>
+                        @a.Dept
+                    </span>
+
                     @if (a.Assigned != null)
                     {
-                        <span style="font-size:12px; color:var(--muted-foreground);">&middot; @a.Assigned</span>
+                        <span>
+                            <i class="bi bi-person"></i>
+                            @a.Assigned
+                        </span>
                     }
+
                 </div>
-                <p style="font-size:14px; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@a.Msg</p>
+
             </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0;">
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@a.Time &middot; @a.Date</span>
-                @if (a.Resolved)
-                {
-                    <span class="badge badge-online" style="font-size:10px;">Resolved</span>
-                }
+
+
+            <!-- Arrow -->
+            <div class="alert-card-arrow">
+
+                <i class="bi bi-chevron-right"></i>
+
             </div>
+
         </div>
     }
+
 </div>
+
+
+<!-- Empty state -->
+<div id="alertsEmpty"
+     class="alerts-empty"
+     style="display:none;">
+
+    <i class="bi bi-check-circle"></i>
+
+    <h2>
+        No alerts found
+    </h2>
+
+    <p>
+        There are no alerts matching this filter.
+    </p>
+
+</div>
+
+
+<script>
+
+    function filterAlerts(filter, button) {
+
+        // Update selected filter
+        document
+            .querySelectorAll(".alert-filter")
+            .forEach(btn => btn.classList.remove("active"));
+
+        button.classList.add("active");
+
+
+        let visible = 0;
+
+        document
+            .querySelectorAll(".alert-card")
+            .forEach(card => {
+
+                const type =
+                    card.dataset.type;
+
+                const resolved =
+                    card.dataset.resolved === "true";
+
+                let show = false;
+
+
+                if (filter === "all") {
+                    show = true;
+                }
+
+                else if (filter === "Critical") {
+                    show = type === "Critical";
+                }
+
+                else if (filter === "Warning") {
+                    show = type === "Warning";
+                }
+
+                else if (filter === "open") {
+                    show = !resolved;
+                }
+
+                else if (filter === "resolved") {
+                    show = resolved;
+                }
+
+
+                card.style.display =
+                    show ? "flex" : "none";
+
+
+                if (show) {
+                    visible++;
+                }
+
+            });
+
+
+        document.getElementById("alertsEmpty").style.display =
+            visible === 0 ? "flex" : "none";
+
+    }
+
+</script>

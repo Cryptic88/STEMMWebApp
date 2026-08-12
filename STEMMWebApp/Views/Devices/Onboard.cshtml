@@ -1,46 +1,258 @@
 ﻿@{
-    ViewData["Title"] = "Add Meter";
-    var nearby = new[]
-    {
-        new { Id = "BT-4A2F", Name = "STEMM Meter Pro", Model = "MP-300", Rssi = -48 },
-        new { Id = "BT-7C91", Name = "STEMM Meter Pro", Model = "MP-300", Rssi = -62 },
-        new { Id = "BT-1E05", Name = "STEMM Meter Lite", Model = "ML-100", Rssi = -71 },
-    };
+    ViewData["Title"] = "Add Device";
 }
 
-<a asp-controller="Devices" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Cancel</a>
+<a asp-controller="Devices"
+   asp-action="Index"
+   class="back-btn">
+    <i class="bi bi-chevron-left"></i>
+    Cancel
+</a>
 
-<div class="card" style="max-width:560px; margin:0 auto;">
-    <div class="pill-steps">
-        <div class="pill-step done"></div>
-        <div class="pill-step"></div>
-        <div class="pill-step"></div>
-        <div class="pill-step"></div>
-    </div>
+<div class="onboarding-page">
 
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-        <i class="bi bi-bluetooth" style="color:var(--accent); font-size:18px;"></i>
-        <h1 style="font-size:16px; font-weight:600; margin:0;">Scan for Nearby Meters</h1>
-    </div>
-    <p style="font-size:13px; color:var(--muted-foreground); margin:0 0 20px;">
-        Make sure the meter is powered on and in pairing mode.
-    </p>
+    <div class="onboarding-card">
 
-    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
-        @foreach (var d in nearby)
-        {
-            <div class="list-row" style="border:1px solid var(--border); border-radius:4px; padding:12px; cursor:pointer;">
-                <i class="bi bi-cpu" style="color:var(--primary);"></i>
-                <div style="flex:1;">
-                    <div style="font-weight:500; font-size:14px;">@d.Name</div>
-                    <div class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Id &middot; @d.Model</div>
-                </div>
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Rssi dBm</span>
+        <!-- Progress -->
+        <div class="onboarding-progress">
+            <div class="progress-step active">
+                <span>1</span>
             </div>
-        }
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>2</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>3</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>4</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>5</span>
+            </div>
+        </div>
+
+        <!-- Icon -->
+        <div class="onboarding-icon">
+            <i class="bi bi-bluetooth"></i>
+        </div>
+
+        <div class="onboarding-step-label">
+            STEP 1 OF 5
+        </div>
+
+        <h1>Find your STEMM meter</h1>
+
+        <p class="onboarding-description">
+            Connect to your meter using Bluetooth to begin the setup process.
+        </p>
+
+        <!-- Instructions -->
+        <div class="setup-info">
+            <div class="setup-info-icon">
+                <i class="bi bi-lightning-charge"></i>
+            </div>
+
+            <div>
+                <strong>Before you continue</strong>
+
+                <span>
+                    Make sure your STEMM meter is powered on
+                    and located nearby.
+                </span>
+            </div>
+        </div>
+
+       <!-- Nearby Devices -->
+<div class="nearby-section">
+
+    <div class="section-label">
+        NEARBY DEVICES
     </div>
 
-    <button class="btn btn-block" style="display:flex; align-items:center; justify-content:center; gap:8px;">
-        <i class="bi bi-arrow-repeat"></i> Scan Again
-    </button>
+    <!-- Device 1 -->
+    <div class="device-option selected"
+         onclick="selectDevice(this, 'STEMM Meter Pro', 'BT-4A2F')">
+
+        <div class="device-option-icon">
+            <i class="bi bi-cpu"></i>
+        </div>
+
+        <div class="device-option-info">
+
+            <strong>STEMM Meter Pro</strong>
+
+            <span class="mono">
+                BT-4A2F · MP-300
+            </span>
+
+        </div>
+
+        <div class="device-signal">
+
+            <div class="signal-bars">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <small>Excellent</small>
+
+        </div>
+
+        <div class="device-selected-icon">
+            <i class="bi bi-check"></i>
+        </div>
+
+    </div>
+
+
+    <!-- Device 2 -->
+    <div class="device-option"
+         onclick="selectDevice(this, 'STEMM Meter Pro', 'BT-7C91')">
+
+        <div class="device-option-icon">
+            <i class="bi bi-cpu"></i>
+        </div>
+
+        <div class="device-option-info">
+
+            <strong>STEMM Meter Pro</strong>
+
+            <span class="mono">
+                BT-7C91 · MP-300
+            </span>
+
+        </div>
+
+        <div class="device-signal">
+
+            <div class="signal-bars">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span class="inactive"></span>
+            </div>
+
+            <small>Good</small>
+
+        </div>
+
+        <div class="device-selected-icon">
+            <i class="bi bi-check"></i>
+        </div>
+
+    </div>
+
+
+    <!-- Device 3 -->
+    <div class="device-option"
+         onclick="selectDevice(this, 'STEMM Meter Lite', 'BT-1E05')">
+
+        <div class="device-option-icon">
+            <i class="bi bi-cpu"></i>
+        </div>
+
+        <div class="device-option-info">
+
+            <strong>STEMM Meter Lite</strong>
+
+            <span class="mono">
+                BT-1E05 · ML-100
+            </span>
+
+        </div>
+
+        <div class="device-signal">
+
+            <div class="signal-bars">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span class="inactive"></span>
+            </div>
+
+            <small>Good</small>
+
+        </div>
+
+        <div class="device-selected-icon">
+            <i class="bi bi-check"></i>
+        </div>
+
+    </div>
+
 </div>
+
+<button id="connectButton"
+        class="btn btn-primary onboarding-button"
+        onclick="connectSelectedDevice()">
+
+    <i class="bi bi-bluetooth"></i>
+
+    Connect to meter
+
+    <i class="bi bi-arrow-right"></i>
+
+</button>
+
+        <button class="onboarding-secondary">
+            <i class="bi bi-arrow-repeat"></i>
+            Scan again
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let selectedDevice = null;
+
+    function selectDevice(element, name, id) {
+
+        // Remove selection from all devices
+        document
+            .querySelectorAll(".device-option")
+            .forEach(device => {
+                device.classList.remove("selected");
+            });
+
+        // Select clicked device
+        element.classList.add("selected");
+
+        selectedDevice = {
+            name: name,
+            id: id
+        };
+
+        console.log("Selected device:", selectedDevice);
+    }
+
+
+    function connectSelectedDevice() {
+
+        if (!selectedDevice) {
+            return;
+        }
+
+        window.location.href =
+            '@Url.Action("Connect", "Devices")';
+
+    }
+
+</script>

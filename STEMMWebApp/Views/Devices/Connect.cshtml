@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Connecting";
+}
+
+<div class="onboarding-page">
+
+    <div class="onboarding-card">
+
+        <!-- Progress -->
+        <div class="onboarding-progress">
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step active">
+                <span>2</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>3</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>4</span>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>5</span>
+            </div>
+
+        </div>
+
+        <!-- Bluetooth -->
+        <div class="connection-animation">
+
+            <div class="connection-ring" id="connectionIcon">
+                <i class="bi bi-bluetooth"></i>
+            </div>
+
+        </div>
+
+        <div class="onboarding-step-label">
+            STEP 2 OF 5
+        </div>
+
+        <h1 id="connectionTitle">
+            Connecting to meter
+        </h1>
+
+        <p class="onboarding-description" id="connectionDescription">
+            Establishing a secure Bluetooth connection with your STEMM meter.
+        </p>
+
+        <!-- Device -->
+        <div class="connected-device">
+
+            <div class="device-option-icon">
+                <i class="bi bi-cpu"></i>
+            </div>
+
+            <div>
+                <strong>STEMM Meter Pro</strong>
+
+                <span class="mono">
+                    BT-4A2F
+                </span>
+            </div>
+
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot"></span>
+                Connecting
+            </div>
+
+        </div>
+
+        <!-- Progress -->
+        <div class="setup-progress">
+
+            <div class="setup-progress-bar"
+                 id="connectionProgress"></div>
+
+        </div>
+
+        <div class="setup-message" id="connectionMessage">
+            Connecting to your meter...
+        </div>
+
+        <!-- Continue -->
+        <button id="continueButton"
+                class="btn btn-primary onboarding-button"
+                disabled
+                onclick="continueSetup()">
+
+            Continue
+
+            <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+    const progress = document.getElementById("connectionProgress");
+    const button = document.getElementById("continueButton");
+
+    const status = document.getElementById("connectionStatus");
+    const title = document.getElementById("connectionTitle");
+    const description = document.getElementById("connectionDescription");
+    const message = document.getElementById("connectionMessage");
+
+    const icon = document.getElementById("connectionIcon");
+
+    // Start progress
+    setTimeout(() => {
+
+        progress.classList.add("completed");
+
+    }, 50);
+
+
+    // Complete after 3 seconds
+    setTimeout(() => {
+
+        progress.classList.add("finished");
+
+        status.innerHTML =
+            '<i class="bi bi-check-circle-fill"></i> Connected';
+
+        title.innerText =
+            "Meter connected";
+
+        description.innerText =
+            "Your STEMM meter has been successfully connected.";
+
+        message.innerText =
+            "Bluetooth connection established.";
+
+        icon.classList.add("completed");
+
+        button.disabled = false;
+
+        button.classList.add("enabled");
+
+    }, 3000);
+
+
+    function continueSetup() {
+
+        if (button.disabled)
+            return;
+
+        window.location.href =
+            '@Url.Action("Wifi", "Devices")';
+
+    }
+
+</script>

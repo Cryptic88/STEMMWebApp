@@ -1,8 +1,10 @@
 ﻿@using STEMMWebApp.Models
 
 @model Meter
+
 @{
-    ViewData["Title"] = $"Device {Model.Id}";
+    ViewData["Title"] = Model.Name;
+
     string StatusBadgeClass(string s) => s switch
     {
         "Warning" => "badge-warning",
@@ -12,57 +14,546 @@
     };
 }
 
-<a asp-controller="Devices" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Back to Devices</a>
+<!-- Back -->
+<a asp-controller="Devices"
+   asp-action="Index"
+   class="back-btn">
 
-<div class="card" style="margin-bottom:20px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-        <div>
-            <div class="mono" style="font-size:12px; color:var(--muted-foreground);">@Model.Id</div>
-            <h1 style="font-size:20px; font-weight:600; margin:2px 0 0;">@Model.Name</h1>
-        </div>
-        <span class="badge @StatusBadgeClass(Model.Status)">@Model.Status</span>
-    </div>
+    <i class="bi bi-chevron-left"></i>
+    Devices
 
-    <div class="grid grid-4">
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Department</div>
-            <div style="font-weight:500;">@Model.Dept</div>
+</a>
+
+
+<!-- =========================================================
+     DEVICE HEADER
+     ========================================================= -->
+
+<div class="device-detail-header">
+
+    <div class="device-detail-title">
+
+        <div class="device-detail-icon">
+            <i class="bi bi-cpu"></i>
         </div>
+
         <div>
-            <div class="stat-label" style="margin-bottom:4px;">Last Reading</div>
-            <div class="mono" style="color:var(--primary); font-weight:600;">@Model.LastReading</div>
-        </div>
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Battery</div>
-            <div class="mono" style="font-weight:600; color:@(Model.Battery < 20 ? "var(--red)" : Model.Battery < 40 ? "var(--amber)" : "var(--cyan)");">@Model.Battery%</div>
-        </div>
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Signal</div>
-            <div style="display:flex; align-items:flex-end; gap:1px; height:14px;">
-                @for (int b = 1; b <= 4; b++)
-                {
-                    <span style="width:4px; border-radius:1px; height:@(b * 25)%; background:@(b <= Model.Signal ? "var(--cyan)" : "var(--muted)"); display:inline-block;"></span>
-                }
+
+            <div class="mono device-id">
+                @Model.Id
             </div>
+
+            <h1>
+                @Model.Name
+            </h1>
+
+            <div class="device-location">
+                <i class="bi bi-geo-alt"></i>
+                @Model.Dept
+            </div>
+
         </div>
+
     </div>
+
+    <span class="badge @StatusBadgeClass(Model.Status)">
+        @Model.Status
+    </span>
+
 </div>
 
-<div class="grid grid-2" style="gap:20px;">
-    <div class="card">
-        <div class="section-head"><span class="section-title">Device Actions</span></div>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start;"><i class="bi bi-arrow-repeat"></i> Refresh Reading</button>
-            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start;"><i class="bi bi-power"></i> Restart Meter</button>
-            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start; color:var(--red);"><i class="bi bi-trash"></i> Remove Device</button>
+
+<!-- =========================================================
+     MAIN POWER CARD
+     ========================================================= -->
+
+<div class="device-power-card">
+
+    <div class="power-card-top">
+
+        <div>
+
+            <span class="power-label">
+                CURRENT POWER
+            </span>
+
+            <div class="power-value">
+
+                <span id="powerValue">
+                    842
+                </span>
+
+                <span class="power-unit">
+                    W
+                </span>
+
+            </div>
+
         </div>
-    </div>
-    <div class="card">
-        <div class="section-head"><span class="section-title">Connection Info</span></div>
-        <div style="display:flex; flex-direction:column; gap:10px; font-size:14px;">
-            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Protocol</span><span class="mono">LoRaWAN</span></div>
-            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Firmware</span><span class="mono">v2.4.1</span></div>
-            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Installed</span><span class="mono">Jan 12, 2025</span></div>
+
+        <div class="power-icon">
+            <i class="bi bi-lightning-charge-fill"></i>
         </div>
+
     </div>
+
+
+    <div class="power-card-bottom">
+
+        <div class="live-indicator">
+            <span class="live-dot"></span>
+            Live reading
+        </div>
+
+        <span>
+            Updated @Model.LastReading
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SENSOR READINGS
+     ========================================================= -->
+
+<div class="device-reading-grid">
+
+    <!-- Voltage -->
+    <div class="device-reading-card">
+
+        <div class="reading-header">
+
+            <span>
+                Voltage
+            </span>
+
+            <i class="bi bi-lightning"></i>
+
+        </div>
+
+        <div class="reading-value">
+
+            231.4
+
+            <span>
+                V
+            </span>
+
+        </div>
+
+        <div class="reading-status">
+            Normal
+        </div>
+
+    </div>
+
+
+    <!-- Current -->
+    <div class="device-reading-card">
+
+        <div class="reading-header">
+
+            <span>
+                Current
+            </span>
+
+            <i class="bi bi-activity"></i>
+
+        </div>
+
+        <div class="reading-value">
+
+            3.64
+
+            <span>
+                A
+            </span>
+
+        </div>
+
+        <div class="reading-status">
+            Normal
+        </div>
+
+    </div>
+
+
+    <!-- Energy -->
+    <div class="device-reading-card">
+
+        <div class="reading-header">
+
+            <span>
+                Energy
+            </span>
+
+            <i class="bi bi-bar-chart"></i>
+
+        </div>
+
+        <div class="reading-value">
+
+            18.42
+
+            <span>
+                kWh
+            </span>
+
+        </div>
+
+        <div class="reading-status">
+            Today
+        </div>
+
+    </div>
+
+
+    <!-- Temperature -->
+    <div class="device-reading-card">
+
+        <div class="reading-header">
+
+            <span>
+                Temperature
+            </span>
+
+            <i class="bi bi-thermometer-half"></i>
+
+        </div>
+
+        <div class="reading-value">
+
+            24.1
+
+            <span>
+                °C
+            </span>
+
+        </div>
+
+        <div class="reading-status">
+            Normal
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     POWER USAGE
+     ========================================================= -->
+
+<div class="device-section-card">
+
+    <div class="device-section-header">
+
+        <div>
+
+            <span class="section-eyebrow">
+                MONITORING
+            </span>
+
+            <h2>
+                Power usage
+            </h2>
+
+        </div>
+
+        <button class="chart-period active">
+            Live
+        </button>
+
+    </div>
+
+
+    <!-- Simple UI-only graph -->
+    <div class="power-chart">
+
+        <div class="chart-y-axis">
+
+            <span>1.2 kW</span>
+            <span>900 W</span>
+            <span>600 W</span>
+            <span>300 W</span>
+            <span>0 W</span>
+
+        </div>
+
+        <div class="chart-area">
+
+            <svg
+                viewBox="0 0 700 220"
+                preserveAspectRatio="none"
+                class="power-chart-svg">
+
+                <!-- Grid -->
+                <line x1="0" y1="40" x2="700" y2="40" />
+                <line x1="0" y1="85" x2="700" y2="85" />
+                <line x1="0" y1="130" x2="700" y2="130" />
+                <line x1="0" y1="175" x2="700" y2="175" />
+
+                <!-- Area -->
+                <path
+                    class="chart-area-fill"
+                    d="
+                    M0 155
+                    L70 145
+                    L140 150
+                    L210 110
+                    L280 125
+                    L350 90
+                    L420 105
+                    L490 75
+                    L560 92
+                    L630 55
+                    L700 70
+                    L700 220
+                    L0 220
+                    Z
+                    " />
+
+                <!-- Line -->
+                <path
+                    class="chart-line"
+                    d="
+                    M0 155
+                    L70 145
+                    L140 150
+                    L210 110
+                    L280 125
+                    L350 90
+                    L420 105
+                    L490 75
+                    L560 92
+                    L630 55
+                    L700 70
+                    " />
+
+            </svg>
+
+            <div class="chart-labels">
+
+                <span>12:00</span>
+                <span>12:10</span>
+                <span>12:20</span>
+                <span>12:30</span>
+                <span>12:40</span>
+                <span>Now</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CONNECTION + DEVICE INFORMATION
+     ========================================================= -->
+
+<div class="device-info-grid">
+
+    <!-- Connection -->
+    <div class="device-section-card">
+
+        <div class="device-section-header">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    CONNECTION
+                </span>
+
+                <h2>
+                    Network status
+                </h2>
+
+            </div>
+
+            <i class="bi bi-wifi connection-large-icon"></i>
+
+        </div>
+
+
+        <div class="connection-list">
+
+            <div class="connection-row">
+
+                <span>
+                    Connection
+                </span>
+
+                <strong class="connection-online">
+                    <span class="live-dot"></span>
+                    Connected
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Network
+                </span>
+
+                <strong class="mono">
+                    STEMM-Lab
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Signal
+                </span>
+
+                <strong class="signal-display">
+
+                    <span class="signal-bars">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </span>
+
+                    Excellent
+
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Last seen
+                </span>
+
+                <strong class="mono">
+                    @Model.LastReading
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Device Information -->
+    <div class="device-section-card">
+
+        <div class="device-section-header">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    DEVICE
+                </span>
+
+                <h2>
+                    Information
+                </h2>
+
+            </div>
+
+            <i class="bi bi-info-circle connection-large-icon"></i>
+
+        </div>
+
+
+        <div class="connection-list">
+
+            <div class="connection-row">
+
+                <span>
+                    Device ID
+                </span>
+
+                <strong class="mono">
+                    @Model.Id
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Model
+                </span>
+
+                <strong>
+                    STEMM Meter Pro
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Firmware
+                </span>
+
+                <strong class="mono">
+                    v2.4.1
+                </strong>
+
+            </div>
+
+            <div class="connection-row">
+
+                <span>
+                    Protocol
+                </span>
+
+                <strong class="mono">
+                    MQTT
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DEVICE ACTIONS
+     ========================================================= -->
+
+<div class="device-actions">
+
+    <button class="btn">
+
+        <i class="bi bi-arrow-repeat"></i>
+
+        Refresh reading
+
+    </button>
+
+    <button class="btn">
+
+        <i class="bi bi-gear"></i>
+
+        Device settings
+
+    </button>
+
+    <button class="btn device-danger">
+
+        <i class="bi bi-trash"></i>
+
+        Remove device
+
+    </button>
+
 </div>

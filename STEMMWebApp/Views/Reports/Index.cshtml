@@ -2,76 +2,610 @@
 
 @{
     ViewData["Title"] = "Reports";
+
     var energyDaily = (List<DailyUsage>)ViewBag.EnergyDaily;
     var costData = (List<CostPoint>)ViewBag.CostData;
-    var maxDaily = energyDaily.Max(d => Math.Max(d.Usage, d.Budget));
-    var maxCost = costData.Max(c => c.Cost);
+
+    // ------------------------------------------------------------
+    // ENERGY CHART
+    // ------------------------------------------------------------
+
+    var maxEnergyValue = energyDaily.Any()
+        ? energyDaily.Max(d => Math.Max(d.Usage, d.Budget))
+        : 1;
+
+    // ------------------------------------------------------------
+    // COST CHART
+    // ------------------------------------------------------------
+
+    var maxCostValue = energyDaily.Any()
+        ? energyDaily.Max(d => Math.Max(d.Cost, d.CostBudget))
+        : 1;
+
+    // ------------------------------------------------------------
+    // SUMMARY
+    // ------------------------------------------------------------
+
+    var totalUsage = energyDaily.Sum(d => d.Usage);
+    var totalBudget = energyDaily.Sum(d => d.Budget);
+
+    var usagePercentage = totalBudget > 0
+        ? (totalUsage / totalBudget) * 100
+        : 0;
+
+    var usageStatus = usagePercentage > 100
+        ? "Over budget"
+        : "Within budget";
+
+    var totalCost = energyDaily.Sum(d => d.Cost);
+    var totalCostBudget = energyDaily.Sum(d => d.CostBudget);
+
+    var costPercentage = totalCostBudget > 0
+        ? (totalCost / totalCostBudget) * 100
+        : 0;
 }
 
-<div class="grid grid-3" style="margin-bottom:24px;">
-    <div class="card stat-card">
-        <span class="stat-label">Total Cost — Aug</span>
-        <span class="stat-value">$19,870</span>
-        <span class="stat-sub">6-month avg: $19,478</span>
+<!-- =========================================================
+     PAGE HEADER
+     ========================================================= -->
+
+<div class="reports-header">
+
+    <div>
+
+        <div class="section-eyebrow">
+            ANALYTICS
+        </div>
+
+        <h1>
+            Reports
+        </h1>
+
+        <p>
+            Analyse energy usage, costs and device performance.
+        </p>
+
     </div>
-    <div class="card stat-card">
-        <span class="stat-label">Weekly Usage</span>
-        <span class="stat-value">@energyDaily.Sum(d => d.Usage) kWh</span>
-        <span class="stat-sub">Budget: @energyDaily.Sum(d => d.Budget) kWh</span>
+
+    <div class="reports-period">
+
+        <button class="report-period active">
+            7D
+        </button>
+
+        <button class="report-period">
+            30D
+        </button>
+
+        <button class="report-period">
+            6M
+        </button>
+
+        <button class="report-period">
+            1Y
+        </button>
+
     </div>
-    <div class="card stat-card">
-        <span class="stat-label">Reports Available</span>
-        <span class="stat-value">12</span>
-        <span class="stat-sub">Last generated today</span>
-    </div>
+
 </div>
 
-<div class="card" style="margin-bottom:24px;">
-    <div class="section-head">
-        <span class="section-title">Energy — Past 7 Days (kWh)</span>
-        <button class="section-action"><i class="bi bi-download"></i> Export</button>
+
+<!-- =========================================================
+     SUMMARY CARDS
+     ========================================================= -->
+
+<div class="report-summary-grid">
+
+    <!-- ENERGY -->
+
+    <div class="report-summary-card">
+
+        <div class="report-summary-top">
+
+            <span class="report-summary-label">
+                ENERGY USAGE
+            </span>
+
+            <div class="report-summary-icon">
+                <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+
+        </div>
+
+        <strong>
+            @totalUsage.ToString("N0")
+            <span>kWh</span>
+        </strong>
+
+        <div class="report-summary-footer">
+
+            <span>
+                Past 7 days
+            </span>
+
+            <span class="report-trend">
+                <i class="bi bi-arrow-up"></i>
+                4.2%
+            </span>
+
+        </div>
+
     </div>
-    <div style="display:flex; align-items:flex-end; gap:14px; height:180px;">
+
+
+    <!-- COST -->
+
+    <div class="report-summary-card">
+
+        <div class="report-summary-top">
+
+            <span class="report-summary-label">
+                ENERGY COST
+            </span>
+
+            <div class="report-summary-icon cost">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+        </div>
+
+        <strong>
+            R @totalCost.ToString("N2")
+        </strong>
+
+        <div class="report-summary-footer">
+
+            <span>
+                Past 7 days
+            </span>
+
+            <span class="report-trend">
+                <i class="bi bi-arrow-down"></i>
+                2.1%
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUDGET -->
+
+    <div class="report-summary-card">
+
+        <div class="report-summary-top">
+
+            <span class="report-summary-label">
+                BUDGET STATUS
+            </span>
+
+            <div class="report-summary-icon budget">
+                <i class="bi bi-pie-chart-fill"></i>
+            </div>
+
+        </div>
+
+        <strong>
+            @usagePercentage.ToString("N0")%
+        </strong>
+
+        <div class="report-summary-footer">
+
+            <span>
+                @usageStatus
+            </span>
+
+            <span class="report-budget-value">
+                @totalBudget.ToString("N0") kWh
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ENERGY USAGE
+     ========================================================= -->
+
+<div class="report-card">
+
+    <div class="report-card-header">
+
+        <div>
+
+            <div class="section-eyebrow">
+                ENERGY
+            </div>
+
+            <h2>
+                Daily Usage
+            </h2>
+
+            <p>
+                Energy consumption over the past 7 days.
+            </p>
+
+        </div>
+
+        <button class="report-export">
+            <i class="bi bi-download"></i>
+            Export
+        </button>
+
+    </div>
+
+
+    <!-- Legend -->
+
+    <div class="report-chart-legend">
+
+        <span>
+            <i class="legend-dot usage"></i>
+            Actual Usage
+        </span>
+
+        <span>
+            <i class="legend-dot budget"></i>
+            Daily Budget
+        </span>
+
+    </div>
+
+
+    <!-- Chart -->
+
+    <div class="energy-chart">
+
+        <div class="chart-grid-line line-1"></div>
+        <div class="chart-grid-line line-2"></div>
+        <div class="chart-grid-line line-3"></div>
+        <div class="chart-grid-line line-4"></div>
+
+
         @foreach (var d in energyDaily)
         {
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Usage</span>
-                <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
-                    <div style="width:100%; border-radius:3px 3px 0 0; background:var(--accent); opacity:.85; height:@((d.Usage * 100 / maxDaily))%;"></div>
+            var usageHeight = maxEnergyValue > 0
+                ? (d.Usage / maxEnergyValue) * 100
+                : 0;
+
+            var budgetHeight = maxEnergyValue > 0
+                ? (d.Budget / maxEnergyValue) * 100
+                : 0;
+
+            <div class="energy-column">
+
+                <div class="energy-value">
+                    @d.Usage.ToString("N1") kWh
                 </div>
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Day</span>
+
+                <div class="energy-bars">
+
+                    <!-- Budget -->
+                    <div class="budget-bar"
+                         style="height:@budgetHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;">
+
+                    </div>
+
+                    <!-- Usage -->
+                    <div class="usage-bar"
+                         style="height:@usageHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;">
+
+                    </div>
+
+                </div>
+
+                <span class="energy-day mono">
+                    @d.Day
+                </span>
+
             </div>
         }
+
     </div>
+
 </div>
 
-<div class="card" style="margin-bottom:24px;">
-    <div class="section-head">
-        <span class="section-title">Cost — Last 6 Months</span>
-        <button class="section-action"><i class="bi bi-download"></i> Export</button>
+
+<!-- =========================================================
+     COST & BUDGET
+     ========================================================= -->
+
+<div class="report-card">
+
+    <div class="report-card-header">
+
+        <div>
+
+            <div class="section-eyebrow">
+                COST
+            </div>
+
+            <h2>
+                Daily Energy Cost
+            </h2>
+
+            <p>
+                Estimated electricity cost compared with your daily budget.
+            </p>
+
+        </div>
+
+        <button class="report-export">
+
+            <i class="bi bi-download"></i>
+
+            Export
+
+        </button>
+
     </div>
-    <div style="display:flex; align-items:flex-end; gap:14px; height:180px;">
-        @foreach (var c in costData)
+
+
+    <!-- Legend -->
+
+    <div class="report-chart-legend">
+
+        <span>
+            <i class="legend-dot cost"></i>
+            Actual Cost
+        </span>
+
+        <span>
+            <i class="legend-dot budget"></i>
+            Daily Budget
+        </span>
+
+    </div>
+
+
+    <!-- Chart -->
+
+    <div class="energy-chart">
+
+        <div class="chart-grid-line line-1"></div>
+        <div class="chart-grid-line line-2"></div>
+        <div class="chart-grid-line line-3"></div>
+        <div class="chart-grid-line line-4"></div>
+
+
+        @foreach (var d in energyDaily)
         {
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">$@c.Cost.ToString("N0")</span>
-                <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
-                    <div style="width:100%; border-radius:3px 3px 0 0; background:var(--primary); opacity:.85; height:@((c.Cost * 100 / maxCost))%;"></div>
+            var costHeight = maxCostValue > 0
+                ? (d.Cost / maxCostValue) * 100
+                : 0;
+
+            var costBudgetHeight = maxCostValue > 0
+                ? (d.CostBudget / maxCostValue) * 100
+                : 0;
+
+            <div class="energy-column">
+
+                <div class="energy-value">
+
+                    R @d.Cost.ToString("N2")
+
                 </div>
-                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@c.Month</span>
+
+
+                <div class="energy-bars cost-bars">
+
+                    <!-- Budget -->
+                    <div class="budget-bar"
+                         style="height:@costBudgetHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;">
+
+                    </div>
+
+
+                    <!-- Cost -->
+                    <div class="cost-bar"
+                         style="height:@costHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;">
+
+                    </div>
+
+                </div>
+
+
+                <span class="energy-day mono">
+                    @d.Day
+                </span>
+
             </div>
         }
+
     </div>
+
 </div>
 
-<div class="card">
-    <div class="section-head"><span class="section-title">Saved Reports</span></div>
-    <table class="data-table">
-        <thead><tr><th>Report</th><th>Period</th><th>Generated</th><th></th></tr></thead>
-        <tbody>
-            <tr><td style="font-weight:500;">Monthly Energy Summary</td><td class="mono">Aug 2026</td><td class="mono" style="color:var(--muted-foreground);">Today</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
-            <tr><td style="font-weight:500;">Department Cost Breakdown</td><td class="mono">Aug 2026</td><td class="mono" style="color:var(--muted-foreground);">Today</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
-            <tr><td style="font-weight:500;">Compliance Audit</td><td class="mono">Q3 2026</td><td class="mono" style="color:var(--muted-foreground);">3 days ago</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
-        </tbody>
-    </table>
+
+<!-- =========================================================
+     SAVED REPORTS
+     ========================================================= -->
+
+<div class="saved-reports-card">
+
+    <div class="saved-reports-header">
+
+        <div>
+
+            <div class="section-eyebrow">
+                DOCUMENTS
+            </div>
+
+            <h2>
+                Saved Reports
+            </h2>
+
+        </div>
+
+        <button class="report-export">
+
+            <i class="bi bi-plus-lg"></i>
+
+            Generate Report
+
+        </button>
+
+    </div>
+
+
+    <div class="saved-reports-list">
+
+
+        <!-- REPORT 1 -->
+
+        <div class="saved-report">
+
+            <div class="saved-report-icon">
+
+                <i class="bi bi-file-earmark-bar-graph"></i>
+
+            </div>
+
+            <div class="saved-report-info">
+
+                <strong>
+                    Monthly Energy Summary
+                </strong>
+
+                <span>
+                    August 2026
+                </span>
+
+            </div>
+
+            <div class="saved-report-date">
+
+                <span>
+                    Generated
+                </span>
+
+                <strong>
+                    Today
+                </strong>
+
+            </div>
+
+            <button class="saved-report-download">
+
+                <i class="bi bi-download"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- REPORT 2 -->
+
+        <div class="saved-report">
+
+            <div class="saved-report-icon">
+
+                <i class="bi bi-diagram-3"></i>
+
+            </div>
+
+            <div class="saved-report-info">
+
+                <strong>
+                    Department Cost Breakdown
+                </strong>
+
+                <span>
+                    August 2026
+                </span>
+
+            </div>
+
+            <div class="saved-report-date">
+
+                <span>
+                    Generated
+                </span>
+
+                <strong>
+                    Today
+                </strong>
+
+            </div>
+
+            <button class="saved-report-download">
+
+                <i class="bi bi-download"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- REPORT 3 -->
+
+        <div class="saved-report">
+
+            <div class="saved-report-icon">
+
+                <i class="bi bi-shield-check"></i>
+
+            </div>
+
+            <div class="saved-report-info">
+
+                <strong>
+                    Compliance Audit
+                </strong>
+
+                <span>
+                    Q3 2026
+                </span>
+
+            </div>
+
+            <div class="saved-report-date">
+
+                <span>
+                    Generated
+                </span>
+
+                <strong>
+                    3 days ago
+                </strong>
+
+            </div>
+
+            <button class="saved-report-download">
+
+                <i class="bi bi-download"></i>
+
+            </button>
+
+        </div>
+
+
+    </div>
+
 </div>
+
+
+<script>
+
+    document
+        .querySelectorAll(".report-period")
+        .forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                document
+                    .querySelectorAll(".report-period")
+                    .forEach(btn =>
+                        btn.classList.remove("active")
+                    );
+
+                this.classList.add("active");
+
+            });
+
+        });
+
+</script>

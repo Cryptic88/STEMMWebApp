@@ -1,0 +1,327 @@
+﻿```cshtml
+@{
+    ViewData["Title"] = "Configuring Device";
+}
+
+<div class="onboarding-page">
+
+    <div class="onboarding-card">
+
+        <!-- Progress -->
+        <div class="onboarding-progress">
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step complete">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <div class="progress-line active"></div>
+
+            <div class="progress-step active" id="stepFour">
+                <span>4</span>
+            </div>
+
+            <div class="progress-line" id="finalProgressLine"></div>
+
+            <div class="progress-step" id="stepFive">
+                <span>5</span>
+            </div>
+
+        </div>
+
+        <!-- Configuration Icon -->
+        <div class="connection-animation">
+
+            <div class="connection-ring configuring" id="configIcon">
+                <i class="bi bi-gear"></i>
+            </div>
+
+        </div>
+
+        <div class="onboarding-step-label">
+            STEP 4 OF 5
+        </div>
+
+        <h1 id="configTitle">
+            Setting up your meter
+        </h1>
+
+        <p class="onboarding-description" id="configDescription">
+            We're finishing the connection and registering
+            your STEMM meter.
+        </p>
+
+        <!-- Setup checklist -->
+        <div class="setup-checklist">
+
+            <!-- Bluetooth -->
+            <div class="setup-check complete">
+
+                <div class="setup-check-icon">
+                    <i class="bi bi-check"></i>
+                </div>
+
+                <div>
+                    <strong>Bluetooth connected</strong>
+                    <span>Meter detected successfully</span>
+                </div>
+
+            </div>
+
+            <!-- Wi-Fi credentials -->
+            <div class="setup-check complete">
+
+                <div class="setup-check-icon">
+                    <i class="bi bi-check"></i>
+                </div>
+
+                <div>
+                    <strong>Wi-Fi credentials sent</strong>
+                    <span>Network information configured</span>
+                </div>
+
+            </div>
+
+            <!-- Wi-Fi connection -->
+            <div class="setup-check active" id="wifiCheck">
+
+                <div class="setup-check-icon" id="wifiIcon">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+
+                <div>
+                    <strong>Connecting to Wi-Fi</strong>
+                    <span id="wifiStatus">
+                        Establishing network connection
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Registration -->
+            <div class="setup-check" id="registerCheck">
+
+                <div class="setup-check-icon" id="registerIcon">
+                    <span></span>
+                </div>
+
+                <div>
+                    <strong>Registering device</strong>
+                    <span id="registerStatus">
+                        Waiting for connection
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="setup-progress">
+
+            <div class="setup-progress-bar"
+                 id="configurationProgress">
+            </div>
+
+        </div>
+
+        <p class="setup-message" id="setupMessage">
+            Connecting your meter to Wi-Fi...
+        </p>
+
+        <!-- Continue -->
+        <button id="continueButton"
+                class="btn btn-primary onboarding-button"
+                disabled
+                onclick="continueSetup()">
+
+            Continue
+
+            <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const progress =
+        document.getElementById("configurationProgress");
+
+    const wifiCheck =
+        document.getElementById("wifiCheck");
+
+    const wifiIcon =
+        document.getElementById("wifiIcon");
+
+    const wifiStatus =
+        document.getElementById("wifiStatus");
+
+    const registerCheck =
+        document.getElementById("registerCheck");
+
+    const registerIcon =
+        document.getElementById("registerIcon");
+
+    const registerStatus =
+        document.getElementById("registerStatus");
+
+    const setupMessage =
+        document.getElementById("setupMessage");
+
+    const continueButton =
+        document.getElementById("continueButton");
+
+    const configTitle =
+        document.getElementById("configTitle");
+
+    const configDescription =
+        document.getElementById("configDescription");
+
+    const configIcon =
+        document.getElementById("configIcon");
+
+    const stepFour =
+        document.getElementById("stepFour");
+
+    const stepFive =
+        document.getElementById("stepFive");
+
+    const finalProgressLine =
+        document.getElementById("finalProgressLine");
+
+
+    /*
+     * Start progress animation
+     */
+    setTimeout(() => {
+
+        progress.classList.add("completed");
+
+    }, 50);
+
+
+    /*
+     * After 1.5 seconds:
+     * Wi-Fi connection is complete.
+     */
+    setTimeout(() => {
+
+        // Wi-Fi complete
+        wifiCheck.classList.remove("active");
+        wifiCheck.classList.add("complete");
+
+        wifiIcon.innerHTML =
+            '<i class="bi bi-check"></i>';
+
+        wifiStatus.innerText =
+            "Wi-Fi connection established";
+
+
+        // Registration becomes active
+        registerCheck.classList.add("active");
+
+        registerIcon.innerHTML =
+            '<i class="bi bi-arrow-repeat"></i>';
+
+        registerStatus.innerText =
+            "Registering your meter";
+
+
+        setupMessage.innerText =
+            "Registering your STEMM meter...";
+
+    }, 1500);
+
+
+    /*
+     * After 3 seconds:
+     * Everything is complete.
+     */
+    setTimeout(() => {
+
+        // Registration complete
+        registerCheck.classList.remove("active");
+        registerCheck.classList.add("complete");
+
+        registerIcon.innerHTML =
+            '<i class="bi bi-check"></i>';
+
+        registerStatus.innerText =
+            "Device registered successfully";
+
+
+        // Finish progress indicator
+        progress.classList.add("finished");
+
+
+        // Step 4 complete
+        stepFour.classList.remove("active");
+        stepFour.classList.add("complete");
+
+        stepFour.innerHTML =
+            '<i class="bi bi-check"></i>';
+
+
+        // Activate step 5
+        finalProgressLine.classList.add("active");
+
+        stepFive.classList.add("active");
+
+
+        // Change main content
+        configTitle.innerText =
+            "Meter ready";
+
+        configDescription.innerText =
+            "Your STEMM meter has been successfully connected and registered.";
+
+
+        setupMessage.innerText =
+            "Your meter is ready to use.";
+
+
+        // Change icon
+        configIcon.classList.remove("configuring");
+        configIcon.classList.add("completed");
+
+        configIcon.innerHTML =
+            '<i class="bi bi-check-lg"></i>';
+
+
+        // Enable Continue
+        continueButton.disabled = false;
+        continueButton.classList.add("enabled");
+
+    }, 3000);
+
+
+    /*
+     * Continue button
+     */
+    function continueSetup() {
+
+        if (continueButton.disabled)
+            return;
+
+        window.location.href =
+            '@Url.Action("Complete", "Devices")';
+
+    }
+
+</script>
+```

@@ -1,64 +1,300 @@
 ﻿@using STEMMWebApp.Models
 
 @model AlertItem
+
 @{
     ViewData["Title"] = $"Alert {Model.Id}";
-    string BadgeClass(string t) => t switch { "Critical" => "badge-critical", "Warning" => "badge-warning", _ => "badge-info" };
+
+    string AlertIcon(string type) => type switch
+    {
+        "Critical" => "exclamation-triangle-fill",
+        "Warning" => "exclamation-circle-fill",
+        _ => "info-circle-fill"
+    };
+
+    string AlertColor(string type) => type switch
+    {
+        "Critical" => "var(--red)",
+        "Warning" => "var(--amber)",
+        _ => "var(--cyan)"
+    };
 }
 
-<a asp-controller="Alerts" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Back to Alerts</a>
 
-<div class="card" style="margin-bottom:20px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <span class="badge @BadgeClass(Model.Type)">@Model.Type</span>
-            <span class="mono" style="font-size:12px; color:var(--muted-foreground);">@Model.Id</span>
-        </div>
-        @if (Model.Resolved)
-        {
-            <span class="badge badge-online">Resolved</span>
-        }
-        else
-        {
-            <button class="btn btn-primary">Mark Resolved</button>
-        }
+<a asp-controller="Alerts"
+   asp-action="Index"
+   class="back-btn">
+
+    <i class="bi bi-chevron-left"></i>
+    Alerts
+
+</a>
+
+
+<!-- =========================================================
+     ALERT HEADER
+     ========================================================= -->
+
+<div class="alert-detail-header">
+
+    <div class="alert-detail-icon"
+         style="color:@AlertColor(Model.Type);">
+
+        <i class="bi bi-@AlertIcon(Model.Type)"></i>
+
     </div>
 
-    <h1 style="font-size:18px; font-weight:600; margin:0 0 8px;">@Model.Msg</h1>
-    <p style="font-size:14px; color:var(--muted-foreground); line-height:1.6; margin:0 0 16px;">@Model.Detail</p>
+    <div class="alert-detail-heading">
 
-    <div class="grid grid-4">
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Department</div>
-            <div style="font-weight:500;">@Model.Dept</div>
+        <div class="alert-detail-type"
+             style="color:@AlertColor(Model.Type);">
+
+            @Model.Type ALERT
+
         </div>
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Meter</div>
-            <div class="mono" style="font-weight:500;">@Model.Meter</div>
+
+        <h1>
+            @Model.Msg
+        </h1>
+
+        <div class="alert-detail-device">
+
+            <i class="bi bi-cpu"></i>
+
+            @Model.Meter
+
+            <span>·</span>
+
+            @Model.Dept
+
         </div>
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Reported</div>
-            <div class="mono" style="font-weight:500;">@Model.Time &middot; @Model.Date</div>
-        </div>
-        <div>
-            <div class="stat-label" style="margin-bottom:4px;">Assigned To</div>
-            <div style="font-weight:500;">@(Model.Assigned ?? "Unassigned")</div>
-        </div>
+
     </div>
+
 </div>
 
-<div class="card">
-    <div class="section-head"><span class="section-title">Timeline</span></div>
-    <div style="display:flex; flex-direction:column; gap:0;">
+
+<!-- =========================================================
+     STATUS
+     ========================================================= -->
+
+<div class="alert-detail-status">
+
+    @if (Model.Resolved)
+    {
+        <div class="alert-status-resolved">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            Alert resolved
+
+        </div>
+    }
+    else
+    {
+        <div class="alert-status-open">
+
+            <span class="live-dot"></span>
+
+            Alert requires attention
+
+        </div>
+    }
+
+</div>
+
+
+<!-- =========================================================
+     ALERT INFORMATION
+     ========================================================= -->
+
+<div class="alert-detail-grid">
+
+    <div class="alert-detail-card">
+
+        <span class="section-eyebrow">
+            DEVICE
+        </span>
+
+        <strong>
+            @Model.Meter
+        </strong>
+
+        <small>
+            @Model.Dept
+        </small>
+
+    </div>
+
+
+    <div class="alert-detail-card">
+
+        <span class="section-eyebrow">
+            REPORTED
+        </span>
+
+        <strong class="mono">
+            @Model.Time
+        </strong>
+
+        <small>
+            @Model.Date
+        </small>
+
+    </div>
+
+
+    <div class="alert-detail-card">
+
+        <span class="section-eyebrow">
+            ASSIGNED TO
+        </span>
+
+        <strong>
+            @(Model.Assigned ?? "Unassigned")
+        </strong>
+
+        <small>
+            Responsible technician
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DETAILS
+     ========================================================= -->
+
+<div class="alert-detail-description">
+
+    <div class="section-eyebrow">
+        DESCRIPTION
+    </div>
+
+    <p>
+        @Model.Detail
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     TIMELINE
+     ========================================================= -->
+
+<div class="alert-timeline-card">
+
+    <div class="device-section-header">
+
+        <div>
+
+            <span class="section-eyebrow">
+                ACTIVITY
+            </span>
+
+            <h2>
+                Timeline
+            </h2>
+
+        </div>
+
+        <i class="bi bi-clock-history"></i>
+
+    </div>
+
+
+    <div class="alert-timeline">
+
         @foreach (var t in Model.Timeline)
         {
-            <div style="display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border);">
-                <span class="mono" style="font-size:12px; color:var(--muted-foreground); width:48px; flex-shrink:0;">@t.Time</span>
-                <div>
-                    <span style="font-weight:500; font-size:13px;">@t.Actor</span>
-                    <span style="font-size:13px; color:var(--muted-foreground);"> — @t.Event</span>
+            <div class="alert-timeline-item">
+
+                <div class="alert-timeline-marker">
+
+                    <span></span>
+
                 </div>
+
+                <div class="alert-timeline-content">
+
+                    <div>
+
+                        <strong>
+                            @t.Event
+                        </strong>
+
+                        <span class="mono">
+                            @t.Time
+                        </span>
+
+                    </div>
+
+                    <small>
+                        @t.Actor
+                    </small>
+
+                </div>
+
             </div>
         }
+
     </div>
+
 </div>
+
+
+<!-- =========================================================
+     ACTION
+     ========================================================= -->
+
+@if (!Model.Resolved)
+{
+    <div class="alert-detail-action">
+
+        <button class="btn btn-primary"
+                onclick="resolveAlert()">
+
+            <i class="bi bi-check-lg"></i>
+
+            Mark as resolved
+
+        </button>
+
+    </div>
+}
+else
+{
+    <div class="alert-detail-action">
+
+        <div class="resolved-message">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            This alert has been resolved.
+
+        </div>
+
+    </div>
+}
+
+
+<script>
+
+    function resolveAlert() {
+
+        // UI only for now
+        const button =
+            document.querySelector(".alert-detail-action button");
+
+        button.innerHTML =
+            '<i class="bi bi-check-circle-fill"></i> Resolved';
+
+        button.disabled = true;
+
+        button.style.opacity = "0.65";
+
+    }
+
+</script>

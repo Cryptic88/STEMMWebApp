@@ -2,48 +2,745 @@
     ViewData["Title"] = "Settings";
 }
 
-<div class="card" style="max-width:640px; margin-bottom:20px;">
-    <div class="section-head"><span class="section-title">Account</span></div>
-    <div class="list-row" style="padding-left:0; padding-right:0; cursor:pointer;" onclick="location.href='@Url.Action("EditProfile", "Settings")'">
-        <div class="avatar" style="cursor:pointer;">OP</div>
-        <div style="flex:1;">
-            <div style="font-weight:500;">Operations Manager</div>
-            <div style="font-size:12px; color:var(--muted-foreground);">Edit profile details</div>
+<div class="settings-page">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="settings-header">
+
+        <div>
+
+            <div class="section-eyebrow">
+                CONFIGURATION
+            </div>
+
+            <h1>
+                Settings
+            </h1>
+
+            <p>
+                Manage your account, preferences and STEMM experience.
+            </p>
+
         </div>
-        <i class="bi bi-chevron-right" style="color:var(--muted-foreground);"></i>
+
     </div>
+
+
+    <!-- =====================================================
+         ACCOUNT
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+                <div class="section-eyebrow">
+                    ACCOUNT
+                </div>
+
+                <h2>
+                    Profile
+                </h2>
+            </div>
+
+        </div>
+
+
+        <a asp-controller="Settings"
+           asp-action="EditProfile"
+           class="settings-profile">
+
+            <div class="avatar settings-avatar">
+                OP
+            </div>
+
+            <div class="settings-profile-info">
+
+                <strong>
+                    Operations Manager
+                </strong>
+
+                <span>
+                    Manage your profile information
+                </span>
+
+                <small>
+                    alex.morgan@stemm.io
+                </small>
+
+            </div>
+
+            <i class="bi bi-chevron-right settings-chevron"></i>
+
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         APPEARANCE
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    APPEARANCE
+                </div>
+
+                <h2>
+                    Theme
+                </h2>
+
+                <p>
+                    Choose how STEMM looks on this device.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="theme-selector">
+
+            <button class="theme-option"
+                    data-theme="light"
+                    onclick="setTheme('light')">
+
+                <div class="theme-preview light-preview">
+
+                    <div class="theme-preview-header"></div>
+
+                    <div class="theme-preview-body">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                </div>
+
+                <div class="theme-option-name">
+
+                    <i class="bi bi-sun-fill"></i>
+
+                    Light
+
+                </div>
+
+                <i class="bi bi-check-circle-fill theme-selected"></i>
+
+            </button>
+
+
+            <button class="theme-option"
+                    data-theme="dark"
+                    onclick="setTheme('dark')">
+
+                <div class="theme-preview dark-preview">
+
+                    <div class="theme-preview-header"></div>
+
+                    <div class="theme-preview-body">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                </div>
+
+                <div class="theme-option-name">
+
+                    <i class="bi bi-moon-fill"></i>
+
+                    Dark
+
+                </div>
+
+                <i class="bi bi-check-circle-fill theme-selected"></i>
+
+            </button>
+
+
+            <button class="theme-option"
+                    data-theme="system"
+                    onclick="setTheme('system')">
+
+                <div class="theme-preview system-preview">
+
+                    <div class="system-preview-light"></div>
+                    <div class="system-preview-dark"></div>
+
+                </div>
+
+                <div class="theme-option-name">
+
+                    <i class="bi bi-circle-half"></i>
+
+                    System
+
+                </div>
+
+                <i class="bi bi-check-circle-fill theme-selected"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NOTIFICATIONS
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    NOTIFICATIONS
+                </div>
+
+                <h2>
+                    Notifications
+                </h2>
+
+                <p>
+                    Choose how STEMM keeps you informed.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-options">
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Push Notifications
+                    </strong>
+
+                    <span>
+                        Receive alerts when devices require attention.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox"
+                           checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Email Digest
+                    </strong>
+
+                    <span>
+                        Receive a weekly summary of energy activity.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox">
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Critical Alerts
+                    </strong>
+
+                    <span>
+                        Always notify me about critical device events.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox"
+                           checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DEVICE SETTINGS
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    DEVICES
+                </div>
+
+                <h2>
+                    Device Preferences
+                </h2>
+
+                <p>
+                    Configure how STEMM displays and monitors devices.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-options">
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Automatic Refresh
+                    </strong>
+
+                    <span>
+                        Automatically refresh live device readings.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox"
+                           checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Show Live Readings
+                    </strong>
+
+                    <span>
+                        Display real-time electrical readings on device pages.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox"
+                           checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="settings-option">
+
+                <div class="settings-option-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>
+                        Compact Device Cards
+                    </strong>
+
+                    <span>
+                        Use a denser layout when viewing multiple devices.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input type="checkbox">
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         REGIONAL
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    REGIONAL
+                </div>
+
+                <h2>
+                    Units & Region
+                </h2>
+
+                <p>
+                    Configure how measurements and dates are displayed.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-fields">
+
+            <div class="settings-field">
+
+                <label>
+                    Energy Unit
+                </label>
+
+                <select>
+                    <option selected>kWh</option>
+                    <option>MWh</option>
+                </select>
+
+            </div>
+
+
+            <div class="settings-field">
+
+                <label>
+                    Currency
+                </label>
+
+                <select>
+                    <option selected>USD — $</option>
+                    <option>ZAR — R</option>
+                    <option>EUR — €</option>
+                    <option>GBP — £</option>
+                </select>
+
+            </div>
+
+
+            <div class="settings-field">
+
+                <label>
+                    Date Format
+                </label>
+
+                <select>
+                    <option selected>12 Aug 2026</option>
+                    <option>Aug 12, 2026</option>
+                    <option>2026-08-12</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SECURITY
+         ===================================================== -->
+
+    <div class="settings-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    SECURITY
+                </div>
+
+                <h2>
+                    Account Security
+                </h2>
+
+                <p>
+                    Manage your account security settings.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-action-list">
+
+            <button class="settings-action">
+
+                <div class="settings-action-icon">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Change Password
+                    </strong>
+
+                    <span>
+                        Update your account password
+                    </span>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </button>
+
+
+            <button class="settings-action">
+
+                <div class="settings-action-icon">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Two-Factor Authentication
+                    </strong>
+
+                    <span>
+                        Add another layer of account protection
+                    </span>
+
+                </div>
+
+                <span class="settings-status">
+                    Not configured
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SESSION
+         ===================================================== -->
+
+    <div class="settings-section session-section">
+
+        <div class="settings-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    SESSION
+                </div>
+
+                <h2>
+                    Sign Out
+                </h2>
+
+                <p>
+                    Sign out of this STEMM account on this device.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="settings-logout">
+
+            <i class="bi bi-box-arrow-right"></i>
+
+            Log Out
+
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         VERSION
+         ===================================================== -->
+
+    <div class="settings-footer">
+
+        <span>
+            STEMM Web
+        </span>
+
+        <span>
+            v1.0.0
+        </span>
+
+    </div>
+
 </div>
 
-<div class="card" style="max-width:640px; margin-bottom:20px;">
-    <div class="section-head"><span class="section-title">Preferences</span></div>
-    <div style="display:flex; flex-direction:column; gap:16px;">
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-            <div>
-                <div style="font-weight:500; font-size:14px;">Push Notifications</div>
-                <div style="font-size:12px; color:var(--muted-foreground);">Alerts and reports</div>
-            </div>
-            <div class="toggle on"><span class="knob"></span></div>
-        </div>
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-            <div>
-                <div style="font-weight:500; font-size:14px;">Email Digest</div>
-                <div style="font-size:12px; color:var(--muted-foreground);">Weekly summary email</div>
-            </div>
-            <div class="toggle"><span class="knob"></span></div>
-        </div>
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-            <div>
-                <div style="font-weight:500; font-size:14px;">Dark Mode</div>
-                <div style="font-size:12px; color:var(--muted-foreground);">Always on for this theme</div>
-            </div>
-            <div class="toggle on"><span class="knob"></span></div>
-        </div>
-    </div>
-</div>
 
-<div class="card" style="max-width:640px;">
-    <div class="section-head"><span class="section-title">Session</span></div>
-    <a asp-controller="Account" asp-action="Logout" class="btn" style="display:inline-flex; align-items:center; gap:8px; color:var(--red);">
-        <i class="bi bi-box-arrow-right"></i> Log Out
-    </a>
-</div>
+<script>
+
+    /*
+     * =========================================================
+     * THEME MANAGEMENT
+     * =========================================================
+     */
+
+    function setTheme(theme) {
+
+        localStorage.setItem("stemm-theme", theme);
+
+        applyTheme(theme);
+
+        updateThemeSelection(theme);
+
+    }
+
+
+    function applyTheme(theme) {
+
+        let actualTheme = theme;
+
+
+        if (theme === "system") {
+
+            actualTheme =
+                window.matchMedia(
+                    "(prefers-color-scheme: light)"
+                ).matches
+                    ? "light"
+                    : "dark";
+
+        }
+
+
+        document.documentElement
+            .setAttribute("data-theme", actualTheme);
+
+    }
+
+
+    function updateThemeSelection(theme) {
+
+        document
+            .querySelectorAll(".theme-option")
+            .forEach(option => {
+
+                option.classList.remove("selected");
+
+                if (option.dataset.theme === theme) {
+
+                    option.classList.add("selected");
+
+                }
+
+            });
+
+    }
+
+    /*
+     * Follow system changes when System is selected.
+     */
+
+    window
+        .matchMedia("(prefers-color-scheme: light)")
+        .addEventListener("change", function () {
+
+            const current =
+                localStorage.getItem("stemm-theme");
+
+            if (current === "system") {
+
+                applyTheme("system");
+
+            }
+
+        });
+
+</script>
