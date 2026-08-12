@@ -1,0 +1,77 @@
+﻿@using STEMMWebApp.Models
+
+@{
+    ViewData["Title"] = "Reports";
+    var energyDaily = (List<DailyUsage>)ViewBag.EnergyDaily;
+    var costData = (List<CostPoint>)ViewBag.CostData;
+    var maxDaily = energyDaily.Max(d => Math.Max(d.Usage, d.Budget));
+    var maxCost = costData.Max(c => c.Cost);
+}
+
+<div class="grid grid-3" style="margin-bottom:24px;">
+    <div class="card stat-card">
+        <span class="stat-label">Total Cost — Aug</span>
+        <span class="stat-value">$19,870</span>
+        <span class="stat-sub">6-month avg: $19,478</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Weekly Usage</span>
+        <span class="stat-value">@energyDaily.Sum(d => d.Usage) kWh</span>
+        <span class="stat-sub">Budget: @energyDaily.Sum(d => d.Budget) kWh</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Reports Available</span>
+        <span class="stat-value">12</span>
+        <span class="stat-sub">Last generated today</span>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+    <div class="section-head">
+        <span class="section-title">Energy — Past 7 Days (kWh)</span>
+        <button class="section-action"><i class="bi bi-download"></i> Export</button>
+    </div>
+    <div style="display:flex; align-items:flex-end; gap:14px; height:180px;">
+        @foreach (var d in energyDaily)
+        {
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Usage</span>
+                <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
+                    <div style="width:100%; border-radius:3px 3px 0 0; background:var(--accent); opacity:.85; height:@((d.Usage * 100 / maxDaily))%;"></div>
+                </div>
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Day</span>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+    <div class="section-head">
+        <span class="section-title">Cost — Last 6 Months</span>
+        <button class="section-action"><i class="bi bi-download"></i> Export</button>
+    </div>
+    <div style="display:flex; align-items:flex-end; gap:14px; height:180px;">
+        @foreach (var c in costData)
+        {
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">$@c.Cost.ToString("N0")</span>
+                <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
+                    <div style="width:100%; border-radius:3px 3px 0 0; background:var(--primary); opacity:.85; height:@((c.Cost * 100 / maxCost))%;"></div>
+                </div>
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@c.Month</span>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-head"><span class="section-title">Saved Reports</span></div>
+    <table class="data-table">
+        <thead><tr><th>Report</th><th>Period</th><th>Generated</th><th></th></tr></thead>
+        <tbody>
+            <tr><td style="font-weight:500;">Monthly Energy Summary</td><td class="mono">Aug 2026</td><td class="mono" style="color:var(--muted-foreground);">Today</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
+            <tr><td style="font-weight:500;">Department Cost Breakdown</td><td class="mono">Aug 2026</td><td class="mono" style="color:var(--muted-foreground);">Today</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
+            <tr><td style="font-weight:500;">Compliance Audit</td><td class="mono">Q3 2026</td><td class="mono" style="color:var(--muted-foreground);">3 days ago</td><td><i class="bi bi-download" style="color:var(--muted-foreground);"></i></td></tr>
+        </tbody>
+    </table>
+</div>

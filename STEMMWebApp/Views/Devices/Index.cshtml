@@ -1,0 +1,89 @@
+﻿@using STEMMWebApp.Models
+
+@model List<Meter>
+@{
+    ViewData["Title"] = "Devices";
+    string StatusBadgeClass(string s) => s switch
+    {
+        "Warning" => "badge-warning",
+        "Online" => "badge-online",
+        "Offline" => "badge-offline",
+        _ => "badge-info",
+    };
+    string SignalBars(int bars)
+    {
+        var html = "<span style=\"display:flex; align-items:flex-end; gap:1px; height:12px;\">";
+        for (int b = 1; b <= 4; b++)
+        {
+            var h = b * 25;
+            var color = b <= bars ? "var(--cyan)" : "var(--muted)";
+            html += $"<span style=\"width:3px; border-radius:1px; height:{h}%; background:{color}; display:inline-block;\"></span>";
+        }
+        return html + "</span>";
+    }
+}
+
+<div class="grid grid-3" style="margin-bottom:24px;">
+    <div class="card stat-card">
+        <span class="stat-label">Total Meters</span>
+        <span class="stat-value">@Model.Count</span>
+        <span class="stat-sub">Registered devices</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Online</span>
+        <span class="stat-value">@Model.Count(m => m.Status == "Online")</span>
+        <span class="stat-sub">Reporting normally</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Attention</span>
+        <span class="stat-value">@Model.Count(m => m.Status != "Online")</span>
+        <span class="stat-sub">Warning or offline</span>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <div class="search-box" style="max-width:280px;">
+            <i class="bi bi-search" style="font-size:13px;"></i>
+            <input type="text" placeholder="Search meters..." />
+        </div>
+        <button class="btn" style="background:var(--primary); color:var(--primary-foreground);">All</button>
+        <button class="btn">Online</button>
+        <button class="btn">Warning</button>
+        <button class="btn">Offline</button>
+        <div style="flex:1"></div>
+        <a asp-controller="Devices" asp-action="Onboard" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+            <i class="bi bi-plus-lg"></i> Add Meter
+        </a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Meter ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Last Reading</th>
+                <th>Battery</th>
+                <th>Signal</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr onclick="location.href='@Url.Action("Detail", "Devices", new { id = m.Id })'" style="cursor:pointer;">
+                    <td class="mono" style="font-size:12px; color:var(--muted-foreground);">@m.Id</td>
+                    <td style="font-weight:500;">@m.Name</td>
+                    <td style="color:var(--muted-foreground);">@m.Dept</td>
+                    <td class="mono" style="color:var(--primary);">@m.LastReading</td>
+                    <td class="mono" style="font-size:12px; color:@(m.Battery < 20 ? "var(--red)" : m.Battery < 40 ? "var(--amber)" : "var(--cyan)");">@m.Battery%</td>
+                    <td>@Html.Raw(SignalBars(m.Signal))</td>
+                    <td><span class="badge @StatusBadgeClass(m.Status)">@m.Status</span></td>
+                    <td><i class="bi bi-chevron-right" style="color:var(--muted-foreground);"></i></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

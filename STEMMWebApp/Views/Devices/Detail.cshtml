@@ -1,0 +1,68 @@
+﻿@using STEMMWebApp.Models
+
+@model Meter
+@{
+    ViewData["Title"] = $"Device {Model.Id}";
+    string StatusBadgeClass(string s) => s switch
+    {
+        "Warning" => "badge-warning",
+        "Online" => "badge-online",
+        "Offline" => "badge-offline",
+        _ => "badge-info",
+    };
+}
+
+<a asp-controller="Devices" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Back to Devices</a>
+
+<div class="card" style="margin-bottom:20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <div>
+            <div class="mono" style="font-size:12px; color:var(--muted-foreground);">@Model.Id</div>
+            <h1 style="font-size:20px; font-weight:600; margin:2px 0 0;">@Model.Name</h1>
+        </div>
+        <span class="badge @StatusBadgeClass(Model.Status)">@Model.Status</span>
+    </div>
+
+    <div class="grid grid-4">
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Department</div>
+            <div style="font-weight:500;">@Model.Dept</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Last Reading</div>
+            <div class="mono" style="color:var(--primary); font-weight:600;">@Model.LastReading</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Battery</div>
+            <div class="mono" style="font-weight:600; color:@(Model.Battery < 20 ? "var(--red)" : Model.Battery < 40 ? "var(--amber)" : "var(--cyan)");">@Model.Battery%</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Signal</div>
+            <div style="display:flex; align-items:flex-end; gap:1px; height:14px;">
+                @for (int b = 1; b <= 4; b++)
+                {
+                    <span style="width:4px; border-radius:1px; height:@(b * 25)%; background:@(b <= Model.Signal ? "var(--cyan)" : "var(--muted)"); display:inline-block;"></span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-2" style="gap:20px;">
+    <div class="card">
+        <div class="section-head"><span class="section-title">Device Actions</span></div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start;"><i class="bi bi-arrow-repeat"></i> Refresh Reading</button>
+            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start;"><i class="bi bi-power"></i> Restart Meter</button>
+            <button class="btn" style="display:flex; align-items:center; gap:8px; justify-content:flex-start; color:var(--red);"><i class="bi bi-trash"></i> Remove Device</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="section-head"><span class="section-title">Connection Info</span></div>
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:14px;">
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Protocol</span><span class="mono">LoRaWAN</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Firmware</span><span class="mono">v2.4.1</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted-foreground);">Installed</span><span class="mono">Jan 12, 2025</span></div>
+        </div>
+    </div>
+</div>

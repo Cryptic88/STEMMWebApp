@@ -1,0 +1,64 @@
+﻿@using STEMMWebApp.Models
+
+@model AlertItem
+@{
+    ViewData["Title"] = $"Alert {Model.Id}";
+    string BadgeClass(string t) => t switch { "Critical" => "badge-critical", "Warning" => "badge-warning", _ => "badge-info" };
+}
+
+<a asp-controller="Alerts" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Back to Alerts</a>
+
+<div class="card" style="margin-bottom:20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span class="badge @BadgeClass(Model.Type)">@Model.Type</span>
+            <span class="mono" style="font-size:12px; color:var(--muted-foreground);">@Model.Id</span>
+        </div>
+        @if (Model.Resolved)
+        {
+            <span class="badge badge-online">Resolved</span>
+        }
+        else
+        {
+            <button class="btn btn-primary">Mark Resolved</button>
+        }
+    </div>
+
+    <h1 style="font-size:18px; font-weight:600; margin:0 0 8px;">@Model.Msg</h1>
+    <p style="font-size:14px; color:var(--muted-foreground); line-height:1.6; margin:0 0 16px;">@Model.Detail</p>
+
+    <div class="grid grid-4">
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Department</div>
+            <div style="font-weight:500;">@Model.Dept</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Meter</div>
+            <div class="mono" style="font-weight:500;">@Model.Meter</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Reported</div>
+            <div class="mono" style="font-weight:500;">@Model.Time &middot; @Model.Date</div>
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:4px;">Assigned To</div>
+            <div style="font-weight:500;">@(Model.Assigned ?? "Unassigned")</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-head"><span class="section-title">Timeline</span></div>
+    <div style="display:flex; flex-direction:column; gap:0;">
+        @foreach (var t in Model.Timeline)
+        {
+            <div style="display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border);">
+                <span class="mono" style="font-size:12px; color:var(--muted-foreground); width:48px; flex-shrink:0;">@t.Time</span>
+                <div>
+                    <span style="font-weight:500; font-size:13px;">@t.Actor</span>
+                    <span style="font-size:13px; color:var(--muted-foreground);"> — @t.Event</span>
+                </div>
+            </div>
+        }
+    </div>
+</div>

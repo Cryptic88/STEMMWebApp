@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Add Meter";
+    var nearby = new[]
+    {
+        new { Id = "BT-4A2F", Name = "STEMM Meter Pro", Model = "MP-300", Rssi = -48 },
+        new { Id = "BT-7C91", Name = "STEMM Meter Pro", Model = "MP-300", Rssi = -62 },
+        new { Id = "BT-1E05", Name = "STEMM Meter Lite", Model = "ML-100", Rssi = -71 },
+    };
+}
+
+<a asp-controller="Devices" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Cancel</a>
+
+<div class="card" style="max-width:560px; margin:0 auto;">
+    <div class="pill-steps">
+        <div class="pill-step done"></div>
+        <div class="pill-step"></div>
+        <div class="pill-step"></div>
+        <div class="pill-step"></div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+        <i class="bi bi-bluetooth" style="color:var(--accent); font-size:18px;"></i>
+        <h1 style="font-size:16px; font-weight:600; margin:0;">Scan for Nearby Meters</h1>
+    </div>
+    <p style="font-size:13px; color:var(--muted-foreground); margin:0 0 20px;">
+        Make sure the meter is powered on and in pairing mode.
+    </p>
+
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+        @foreach (var d in nearby)
+        {
+            <div class="list-row" style="border:1px solid var(--border); border-radius:4px; padding:12px; cursor:pointer;">
+                <i class="bi bi-cpu" style="color:var(--primary);"></i>
+                <div style="flex:1;">
+                    <div style="font-weight:500; font-size:14px;">@d.Name</div>
+                    <div class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Id &middot; @d.Model</div>
+                </div>
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Rssi dBm</span>
+            </div>
+        }
+    </div>
+
+    <button class="btn btn-block" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+        <i class="bi bi-arrow-repeat"></i> Scan Again
+    </button>
+</div>

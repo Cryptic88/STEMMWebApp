@@ -1,0 +1,167 @@
+﻿@using STEMMWebApp.Models
+@{
+    ViewData["Title"] = "Dashboard";
+    var departments = (List<Department>)ViewBag.Departments;
+    var alerts = (List<AlertItem>)ViewBag.Alerts;
+    var totalUsage = departments.Sum(d => d.Usage);
+    var criticalCount = alerts.Count(a => !a.Resolved && a.Type == "Critical");
+    var activeAlerts = alerts.Count(a => !a.Resolved);
+    var meters = SampleData.Meters;
+    var onlineCount = meters.Count(m => m.Status == "Online");
+    var offlineCount = meters.Count(m => m.Status == "Offline");
+
+    string StatusBadgeClass(string s) => s switch
+    {
+        "Critical" => "badge-critical",
+        "Warning" => "badge-warning",
+        "Online" or "Normal" => "badge-online",
+        "Offline" => "badge-offline",
+        _ => "badge-info",
+    };
+    var maxDaily = SampleData.EnergyDaily.Max(d => Math.Max(d.Usage, d.Budget));
+    var maxCost = SampleData.CostData.Max(c => c.Cost);
+}
+
+<div class="grid grid-4" style="margin-bottom:24px;">
+    <div class="card stat-card">
+        <span class="stat-label">Total Usage Today</span>
+        <span class="stat-value">@totalUsage.ToString("0") kWh</span>
+        <span class="stat-sub">Across all departments</span>
+        <span class="stat-trend up"><i class="bi bi-arrow-up"></i> 3.2% vs last week</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Active Alerts</span>
+        <span class="stat-value">@activeAlerts</span>
+        <span class="stat-sub">@criticalCount critical</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Devices Online</span>
+        <span class="stat-value">@onlineCount/@meters.Count</span>
+        <span class="stat-sub">@offlineCount offline</span>
+    </div>
+    <div class="card stat-card">
+        <span class="stat-label">Est. Daily Cost</span>
+        <span class="stat-value">$2,387</span>
+        <span class="stat-sub">Budget: $2,800</span>
+        <span class="stat-trend down"><i class="bi bi-arrow-down"></i> 1.4% vs last week</span>
+    </div>
+</div>
+
+<div style="margin-bottom:24px;">
+    <div class="section-head"><span class="section-title">Quick Actions</span></div>
+    <div style="display:flex; flex-wrap:wrap; gap:12px;">
+        <a asp-controller="Alerts" asp-action="Index" class="btn" style="display:inline-flex; align-items:center; gap:8px; background:var(--secondary);">
+            <i class="bi bi-exclamation-triangle" style="color:var(--primary);"></i> Active Alerts
+        </a>
+        <a asp-controller="Devices" asp-action="Index" class="btn" style="display:inline-flex; align-items:center; gap:8px; background:var(--secondary);">
+            <i class="bi bi-cpu" style="color:var(--primary);"></i> Device Status
+        </a>
+        <a asp-controller="Reports" asp-action="Index" class="btn" style="display:inline-flex; align-items:center; gap:8px; background:var(--secondary);">
+            <i class="bi bi-bar-chart" style="color:var(--primary);"></i> Usage Reports
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-2" style="margin-bottom:24px;">
+    <div class="card">
+        <div class="section-head"><span class="section-title">Energy — Past 7 Days</span></div>
+        <div style="display:flex; align-items:flex-end; gap:10px; height:160px;">
+            @foreach (var d in SampleData.EnergyDaily)
+            {
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
+                        <div style="width:100%; border-radius:3px 3px 0 0; background:var(--accent); opacity:.85; height:@((d.Usage * 100 / maxDaily).ToString("0"))%;"></div>
+                    </div>
+                    <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@d.Day</span>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="card">
+        <div class="section-head"><span class="section-title">Monthly Cost Trend</span></div>
+        <div style="display:flex; align-items:flex-end; gap:10px; height:160px;">
+            @foreach (var c in SampleData.CostData)
+            {
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width:100%; display:flex; align-items:flex-end; height:130px;">
+                        <div style="width:100%; border-radius:3px 3px 0 0; background:var(--primary); opacity:.85; height:@((c.Cost * 100 / maxCost).ToString("0"))%;"></div>
+                    </div>
+                    <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@c.Month</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+    <div class="section-head">
+        <span class="section-title">Departments</span>
+        <a asp-controller="Reports" asp-action="Index" class="section-action">View All</a>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Usage (kWh)</th>
+                <th>Budget (kWh)</th>
+                <th>Utilization</th>
+                <th>Trend</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in departments)
+            {
+                var pct = Math.Min(100, (d.Usage / d.Budget) * 100);
+                <tr>
+                    <td style="font-weight:500;">@d.Name</td>
+                    <td class="mono" style="color:var(--primary);">@d.Usage.ToString("0.0")</td>
+                    <td class="mono" style="color:var(--muted-foreground);">@d.Budget.ToString("0")</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="progress-track" style="flex:1; max-width:96px;">
+                                <div class="progress-fill" style="width:@(pct.ToString("0"))%;"></div>
+                            </div>
+                            <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@pct.ToString("0")%</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="mono" style="font-size:12px; font-weight:500; color:@(d.Trend >= 0 ? "#f87171" : "#34d399");">
+                            <i class="bi bi-arrow-@(d.Trend >= 0 ? "up" : "down")"></i> @Math.Abs(d.Trend)%
+                        </span>
+                    </td>
+                    <td><span class="badge @StatusBadgeClass(d.Status)">@d.Status</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <div class="section-head">
+        <span class="section-title">Recent Alerts</span>
+        <a asp-controller="Alerts" asp-action="Index" class="section-action">View All</a>
+    </div>
+    @foreach (var a in alerts.Take(4))
+    {
+        <div class="list-row" style="padding-left:0; padding-right:0;">
+            <span style="color:@(a.Type == "Critical" ? "var(--red)" : a.Type == "Warning" ? "var(--amber)" : "var(--cyan)");">
+                <i class="bi bi-@(a.Type == "Critical" ? "exclamation-triangle" : a.Type == "Warning" ? "exclamation-circle" : "activity")"></i>
+            </span>
+            <div style="flex:1; min-width:0;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                    <span class="badge @StatusBadgeClass(a.Type)">@a.Type</span>
+                    <span style="font-size:12px; color:var(--muted-foreground);">@a.Dept</span>
+                </div>
+                <p style="font-size:14px; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@a.Msg</p>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0;">
+                <span class="mono" style="font-size:11px; color:var(--muted-foreground);">@a.Time</span>
+                @if (a.Resolved)
+                {
+                    <i class="bi bi-check-circle" style="color:var(--primary); font-size:13px;"></i>
+                }
+            </div>
+        </div>
+    }
+</div>

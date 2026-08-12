@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<a asp-controller="Settings" asp-action="Index" class="back-btn"><i class="bi bi-chevron-left"></i> Back to Settings</a>
+
+<div class="card" style="max-width:520px;">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:24px;">
+        <div class="avatar" style="width:56px; height:56px; font-size:18px;">OP</div>
+        <div>
+            <button class="btn" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 12px;">
+                <i class="bi bi-camera"></i> Change Photo
+            </button>
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Full Name</label>
+        <input type="text" value="Alex Morgan" />
+    </div>
+    <div class="field">
+        <label>Role</label>
+        <select>
+            <option selected>Operations Manager</option>
+            <option>Billing Officer</option>
+            <option>Energy Auditor</option>
+            <option>Maintenance Tech</option>
+            <option>Safety Officer</option>
+            <option>Facility Manager</option>
+            <option>Executive</option>
+        </select>
+    </div>
+    <div class="field">
+        <label>Email</label>
+        <input type="email" value="alex.morgan@stemm.io" />
+    </div>
+    <div class="field">
+        <label>Phone</label>
+        <input type="tel" value="+1 (555) 019-2244" />
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button class="btn btn-primary" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="bi bi-check2"></i> Save Changes
+        </button>
+        <a asp-controller="Settings" asp-action="Index" class="btn" style="flex:1; text-align:center;">Cancel</a>
+    </div>
+</div>
